@@ -1,10 +1,3 @@
-game = True
-
-board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-round = 1
-player = "O"
-
 print("""
  _   _      _             _             
 | | (_)    | |           | |            
@@ -15,7 +8,7 @@ print("""
 """)
 
 
-def change_board():
+def update_board():
     board2 = (f"""
           |     |     
        {board[0]}  |  {board[1]}  |  {board[2]}  
@@ -30,58 +23,67 @@ def change_board():
     print(board2)
 
 
+def set_game_vars():
+    global board, game, round, tick, endgame
+    board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    game = True
+    round = 1
+    tick = "O"
+    endgame = False
+
+
+set_game_vars()
+
 while game:
 
-    change_board()
+    if endgame:
+        if input("If you want to restart, type 'R' ") == "R":
+            set_game_vars()
+        else:
+            print("Game Closed")
+            break
 
-    if player == "O":
-        player = "X"
-    else:
-        player = "O"
-
+    update_board()
     print(f"round: {round}")
 
-    if not round == 10:
-        to_replace = input(f"{player}'s move. Place your mark. Numbers 1-9 only. ")
+    if tick == "O":
+        tick = "X"
+    else:
+        tick = "O"
+
+    if round < 10:
+        to_replace = input(f"{tick}'s move. Place your mark. Numbers 1-9 only. ")
         if not board[int(to_replace) - 1] == "X" and not board[int(to_replace) - 1] == "O":
-            board[int(to_replace) - 1] = board[int(to_replace) - 1].replace(board[int(to_replace) - 1], player)
+            board[int(to_replace) - 1] = board[int(to_replace) - 1].replace(board[int(to_replace) - 1], tick)
 
         else:
             print("invalid move")
             round -= 1
-            if player == "X":
-                player = "O"
+            if tick == "X":
+                tick = "O"
             else:
-                player = "X"
+                tick = "X"
     else:
         print("It's a draw")
-        break
+        endgame = True
 
     if round >= 3:
         for space in range(0, 3):
-            if board[space] == player and board[space + 3] == player and board[space + 6] == player:
-                print(f"{player} wins, Diagonal")
-                change_board()
-                game = False
-                break
+            if board[space] == tick and board[space + 3] == tick and board[space + 6] == tick:
+                print(f"{tick} wins, Vertical")
+                update_board()
+                endgame = True
 
         for space in range(0, len(board), 3):
-            if board[space] == player and board[space + 1] == player and board[space + 2] == player:
-                print(f"{player} wins, Diagonal")
-                change_board()
-                game = False
-                break
+            if board[space] == tick and board[space + 1] == tick and board[space + 2] == tick:
+                print(f"{tick} wins, Horizontal")
+                update_board()
+                endgame = True
 
-        if board[4] == player:
-            if board[0] == player and board[8] == player:
-                change_board()
-                print(f"{player} wins, Diagonal")
-                game = False
-                break
-            elif board[2] == player and board[6] == player:
-                change_board()
-                print(f"{player} wins, Diagonal")
-                game = False
-                break
+        if board[4] == tick:
+            if board[0] == tick and board[8] == tick or board[2] == tick and board[6] == tick:
+                update_board()
+                print(f"{tick} wins, Diagonal")
+                endgame = True
 
     round += 1
