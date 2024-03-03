@@ -68,22 +68,21 @@ while game:
         endgame = True
 
     if round >= 3:
-        for space in range(0, 3):
-            if board[space] == tick and board[space + 3] == tick and board[space + 6] == tick:
+        full_row = [tick, tick, tick]
+        for index, space in enumerate(board):
+            if board[index::3] == full_row:
+                update_board()
                 print(f"{tick} wins, Vertical")
-                update_board()
                 endgame = True
 
-        for space in range(0, len(board), 3):
-            if board[space] == tick and board[space + 1] == tick and board[space + 2] == tick:
+            elif index in list(range(0, 7, 3)) and board[index:index + 3] == full_row:
+                update_board()
                 print(f"{tick} wins, Horizontal")
-                update_board()
                 endgame = True
 
-        if board[4] == tick:
-            if board[0] == tick and board[8] == tick or board[2] == tick and board[6] == tick:
-                update_board()
-                print(f"{tick} wins, Diagonal")
-                endgame = True
+        if board[0::4] == full_row or board[2::2][:3] == full_row:
+            update_board()
+            print(f"{tick} wins, Diagonal")
+            endgame = True
 
     round += 1
